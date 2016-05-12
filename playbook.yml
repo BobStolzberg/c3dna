@@ -5,6 +5,7 @@
     Account: ''
     AntiAffinityPoolId: ''
     GroupID: 'Dev'
+    Datacenter: 'VA1'
     Network: 'vlan_2066_10.125.66'
     PrimaryDNS: '8.8.8.8'
     SecondaryDNS: '8.8.8.8'
