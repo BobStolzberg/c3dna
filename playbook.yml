@@ -5,7 +5,6 @@
     Account: ''
     AntiAffinityPoolId: ''
     GroupID: 'Dev'
-    Datacenter: 'VA1'
     Network: 'vlan_2066_10.125.66'
     PrimaryDNS: '8.8.8.8'
     SecondaryDNS: '8.8.8.8'
@@ -20,7 +19,7 @@
       anti_affinity_policy_id: '{{ AntiAffinityPoolId }}'
       cpu: 4
       description: C3DNA Controller Appliance
-      location: '{{ datacenter }}'
+      location: VA1
       group: '{{ GroupID }}'
       managed_os: false
       memory: 6
