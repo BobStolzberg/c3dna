@@ -11,6 +11,8 @@
     User: ''
     User_Password: ''
     image: 'c3dna_controller'
+    internalIP: ''
+    uiID: 'c3dnaController1'
   tasks:
   - clc_server:
       additional_disks:
@@ -39,14 +41,16 @@
       publicip: '{{ item.details.ipAddresses[-1].public | default("") }}'
     with_flattened: clc.servers
   - clc_blueprint_package:
-      package_id: 70787636-4a2c-489c-ba47-9889a0beb8a1
+      package_id: 70787636-4a2c-489c-ba47-9889a0beb8a4
       package_params:
         T3.Identity.Account: '{{Account}}'
         T3.Identity.User: '{{User}}'
         T3.ServerInfo.User_Password: '{{User_Password}}'
         image: '{{image}}'
+	internalIP: '{{internalIP}}'
+	uiID: '{{uiID}}'
       server_ids: '{{ item.name }}'
-    name: 'package: Install Appliance'
+    name: 'package: Install and Configure C3DNA Controller'
     with_flattened: '{{ clc.servers }}'
 
   - debug: var=clc.servers[0].details.ipAddresses
