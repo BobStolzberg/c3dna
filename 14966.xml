@@ -1,0 +1,53 @@
+<Template SendEmail="true">
+  <UI>
+    <Group Name="Global Blueprint Values">
+      <Parameter Name="Current control.ctl.io Password" Type="Password" Variable="T3.ServerInfo.User_Password" Prompt="Global" />
+    </Group>
+    <Group Name="Build Server" ID="cb9762b3-61a6-4cfb-af97-96bf7dbfc359" PromptRunAs="false">
+      <Parameter Name="Password" Type="Password" Variable="T3.BuildServerTask.Password" />
+      <Parameter Name="Group" Type="Group" Variable="T3.BuildServerTask.GroupID" />
+      <Parameter Name="Network" Type="Network" Variable="T3.BuildServerTask.Network" />
+      <Parameter Name="Primary DNS" Type="ServerIP" Variable="T3.BuildServerTask.PrimaryDNS" Default="${T3.PrimaryDNS}" />
+      <Parameter Name="Secondary DNS" Type="ServerIP" Variable="T3.BuildServerTask.SecondaryDNS" Default="${T3.SecondaryDNS}" Required="false" />
+      <Parameter Name="Server Type" Type="Option" Variable="T3.BuildServerTask.HardwareType" Default="Standard">
+        <Option Name="Enterprise" Value="Enterprise" />
+        <Option Name="Standard (default)" Value="Standard" />
+        <Option Name="Hyperscale" Value="Hyperscale" />
+      </Parameter>
+      <Parameter Name="Anti-Affinity Pool" Type="AntiAffinityPool" Variable="T3.BuildServerTask.AntiAffinityPoolId" DisplayDependsOn="T3.BuildServerTask.HardwareType" ShowIfValue="Hyperscale" Required="false" />
+      <Parameter Name="Service Level" Type="Option" Variable="T3.BuildServerTask.ServiceLevel" Default="Standard" DisplayDependsOn="T3.BuildServerTask.HardwareType" ShowIfValue="Enterprise" Required="false">
+        <Option Name="Premium" Value="Premium" />
+        <Option Name="Standard (default)" Value="Standard" />
+      </Parameter>
+      <Group Name="Server Name(s)" Collapsed="true">
+        <Parameter Name="" Type="ServerAlias" Variable="fbc0bbd5-76a9-4c2f-96f4-c315335d6f5d.Alias" Default="SOFTNA" />
+      </Group>
+    </Group>
+    <Group Name="Install Appliance on SOFTNA" ID="70787636-4a2c-489c-ba47-9889a0beb8a1" PromptRunAs="true" TaskID="3adb9191-99f1-4733-b36b-bd2eaa849d39" />
+  </UI>
+  <Properties />
+  <Tasks>
+    <BuildServer Title="Build Server SOFTNA" Classification="Server" UUID="cb9762b3-61a6-4cfb-af97-96bf7dbfc359" Template="BOSH-OPENSTACK-CLC-UBUNTU-TRUSTY-GO_AGENT_3062" AntiAffinityPoolId="${T3.BuildServerTask.AntiAffinityPoolId}" IsManagedOS="false" MemoryGB="8" CpuCount="2" Alias="SOFTNA" Description="C3DNA Appliance" GroupID="${T3.BuildServerTask.GroupID}" Network="${T3.BuildServerTask.Network}" PrimaryDNS="${T3.BuildServerTask.PrimaryDNS}" SecondaryDNS="${T3.BuildServerTask.SecondaryDNS}" ID="fbc0bbd5-76a9-4c2f-96f4-c315335d6f5d">
+      <Properties>
+        <Property Name="Password" Value="${T3.BuildServerTask.Password}" />
+        <Property Name="HardwareType" Value="${T3.BuildServerTask.HardwareType}" />
+        <Property Name="ServiceLevel" Value="${T3.BuildServerTask.ServiceLevel}" />
+        <Property Name="IsHyperscale" Value="${T3.BuildServerTask.IsHyperscale}" />
+      </Properties>
+      <AddDisk Title="Add 40 GB Disk (raw only)" ID="f92242e5-c730-4feb-9f74-8ecac5f11a2e" UUID="9a851f50-c676-4c11-b4c8-a0a7241c1060" Classification="System">
+        <Properties>
+          <Property Name="GB" Value="40" />
+          <Property Name="Title" Value="Add 40 GB Disk (raw only)" />
+          <Property Name="RawOnly" Value="True" />
+        </Properties>
+      </AddDisk>
+      <DeployPackage Persistent="false" ID="3adb9191-99f1-4733-b36b-bd2eaa849d39" UUID="70787636-4a2c-489c-ba47-9889a0beb8a1" Classification="Script" Title="Install Appliance">
+        <Properties>
+          <Property Name="image" Value="softnas_3.4.4" />
+          <Property Name="T3.Identity.User" Value="${T3.Identity.User}" />
+          <Property Name="T3.Identity.Account" Value="${T3.Identity.Account}" />
+        </Properties>
+      </DeployPackage>
+    </BuildServer>
+  </Tasks>
+</Template>

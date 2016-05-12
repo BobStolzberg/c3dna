@@ -1,0 +1,52 @@
+---
+- hosts: localhost
+  name: Install C3DNA Controller Appliance
+  vars:
+    Account: ''
+    AntiAffinityPoolId: ''
+    GroupID: ''
+    Network: ''
+    PrimaryDNS: ''
+    SecondaryDNS: ''
+    User: ''
+    User_Password: ''
+    image: 'c3dna_controller'
+  tasks:
+  - clc_server:
+      additional_disks:
+      - sizeGB: 40
+        type: raw
+      anti_affinity_policy_id: '{{ AntiAffinityPoolId }}'
+      cpu: 4
+      description: C3DNA Controller Appliance
+      location: '{{ datacenter }}'
+      group: '{{ GroupID }}'
+      managed_os: false
+      memory: 6
+      name: C3DNA
+      network_id: '{{ Network }}'
+      primary_dns: '{{ PrimaryDNS }}'
+      secondary_dns: '{{ SecondaryDNS }}'
+      template: BOSH-OPENSTACK-CLC-UBUNTU-TRUSTY-GO_AGENT_3062
+    name: Build Server C3DNA
+    register: clc
+  - name: add to in-memory inventory
+    add_host:
+      ansible_ssh_host: '{{ item.details.ipAddresses[-1].internal }}'
+      ansible_ssh_user: root
+      groups: servers
+      name: '{{ item.name }}'
+      publicip: '{{ item.details.ipAddresses[-1].public | default("") }}'
+    with_flattened: clc.servers
+  - clc_blueprint_package:
+      package_id: 70787636-4a2c-489c-ba47-9889a0beb8a1
+      package_params:
+        T3.Identity.Account: '{{Account}}'
+        T3.Identity.User: '{{User}}'
+        T3.ServerInfo.User_Password: '{{User_Password}}'
+        image: '{{image}}'
+      server_ids: '{{ item.name }}'
+    name: 'package: Install Appliance'
+    with_flattened: '{{ clc.servers }}'
+
+  - debug: var=clc.servers[0].details.ipAddresses

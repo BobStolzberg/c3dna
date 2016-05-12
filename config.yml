@@ -1,0 +1,41 @@
+---
+name: C3DNA
+shortDescription: Runner job to deploy the C3DNA Appliance
+public: true
+author: C3DNA
+organization: C3DNA
+defaultPlaybook: playbook.yml
+imagePath: https://raw.github.com/clc-runner/Assets/master/c3dna.png
+description: 'C3DNA wkfhkwfhskjdfhskfd'
+fields:
+- displayName: Datacenter
+  name: datacenter
+  required: true
+  type: datacenters
+- displayName: Network
+  name: Network
+  parent: datacenter
+  required: true
+  type: networks
+- displayName: Group
+  name: GroupID
+  parent: datacenter
+  required: true
+  type: groups
+- displayName: Account Alias
+  helptext: null
+  name: Account
+  required: false
+  type: text
+- displayName: Current Username
+  helptext: null
+  name: User
+  required: false
+  type: text
+- displayName: Current Password
+  helptext: null
+  name: User_Password
+  required: false
+  type: password
+tags:
+- Utility
